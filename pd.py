@@ -366,7 +366,7 @@ def task4_refund_analysis(df):
 # ==================== 主执行流程 ====================
 if __name__ == "__main__":
     # 读取数据
-    df = pd.read_parquet('10G_data_new/', columns=['user_name', 'purchase_history'])
+    df = pd.read_parquet('30G_data_new/', columns=['user_name', 'purchase_history'])
 
     # 数据预处理
     processed_df = process_data(df)
