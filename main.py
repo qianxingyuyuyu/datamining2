@@ -161,7 +161,7 @@ def process_data(ddf_path):
     ddf = dd.read_parquet(ddf_path,
                          columns=['user_name', 'purchase_history'],
                          engine='pyarrow')
-    #ddf = ddf.sample(frac=0.000001, random_state=42).persist()
+    
     # 第一步：基础处理（使用基础元数据）
     processed_ddf = ddf.map_partitions(
         process_partition,
@@ -589,39 +589,35 @@ def task4_refund_analysis(processed_ddf):
 # ==================== 主执行流程 ====================
 if __name__ == "__main__":
     # 数据预处理
-    processed_ddf = process_data('10G_data/')
-    # 将processed_ddf存储为parquet文件
-    processed_ddf.to_parquet('processed_data.parquet', engine='pyarrow')
-    # # 采样
-    # print(processed_ddf.head())
-    # # 执行任务
-    # print('开始执行任务1...')
-    # task1_results = task1_association_rules(processed_ddf)
-    # task1_results.to_csv('task1_electronics_rules.csv')
-    # print('开始执行任务2...')
-    # task2_results = task2_payment_analysis(processed_ddf)
-    # print('开始执行任务3...')
-    # task3_results = task3_time_analysis(processed_ddf)
-    # print('开始执行任务4...')
-    # task4_results = task4_refund_analysis(processed_ddf)
-    #
-    # # 保存所有结果
-    # with pd.ExcelWriter('analysis_results.xlsx') as writer:
-    #
-    #     task1_results.to_excel(writer, sheet_name="电子产品关联规则")
-    #
-    #     task2_results['payment_category_rules'].to_excel(
-    #         writer,
-    #         sheet_name="支付方式关联规则"
-    #     )
-    #
-    #     pd.DataFrame(task3_results['sequence_rules']).to_excel(
-    #         writer,
-    #         sheet_name="序列规则"
-    #     )
-    #
-    #     # 任务4结果
-    #     pd.DataFrame(task4_results['refund_rules']).to_excel(
-    #         writer,
-    #         sheet_name="退款关联规则"
-    #     )
+    processed_ddf = process_data('30G_data_new/')
+    print(processed_ddf.head())
+    # 执行任务
+    print('开始执行任务1...')
+    task1_results = task1_association_rules(processed_ddf)
+    task1_results.to_csv('task1_electronics_rules.csv')
+    print('开始执行任务2...')
+    task2_results = task2_payment_analysis(processed_ddf)
+    print('开始执行任务3...')
+    task3_results = task3_time_analysis(processed_ddf)
+    print('开始执行任务4...')
+    task4_results = task4_refund_analysis(processed_ddf)
+    
+    # 保存所有结果
+    with pd.ExcelWriter('analysis_results.xlsx') as writer:
+    
+        task1_results.to_excel(writer, sheet_name="电子产品关联规则")
+    
+        task2_results['payment_category_rules'].to_excel(
+            writer,
+            sheet_name="支付方式关联规则"
+        )
+    
+        pd.DataFrame(task3_results['sequence_rules']).to_excel(
+            writer,
+            sheet_name="序列规则"
+        )
+    
+        pd.DataFrame(task4_results['refund_rules']).to_excel(
+            writer,
+            sheet_name="退款关联规则"
+        )
