@@ -151,7 +151,7 @@ def process_data(ddf_path):
     }
 
     ddf = dd.read_parquet(ddf_path, columns=['user_name', 'purchase_history'],blocksize="256MB")
-    #ddf = ddf.sample(frac=0.01, random_state=42).persist()
+    
     processed_ddf = ddf.map_partitions(
         process_partition,
         meta=meta
@@ -567,19 +567,19 @@ def task4_refund_analysis(processed_ddf):
 # ==================== 主执行流程 ====================
 if __name__ == "__main__":
     # 数据预处理
-    processed_ddf = process_data('10G_data/')
+    processed_ddf = process_data('30G_data_new/')
     print('----------------------')
     print(processed_ddf.head())
     # 执行任务
-    # print('开始执行任务1...')
-    # task1_results = task1_association_rules(processed_ddf)
-    # task1_results.to_csv('task1_electronics_rules.csv')
-    # print('开始执行任务2...')
-    # task2_results = task2_payment_analysis(processed_ddf)
-    # task2_results['payment_category_rules'].to_csv('task2_payment_rules.csv')
-    # print('开始执行任务3...')
-    # task3_results = task3_time_analysis(processed_ddf)
-    # task3_results.to_csv('task3_sequence_rules.csv')
+    print('开始执行任务1...')
+    task1_results = task1_association_rules(processed_ddf)
+    task1_results.to_csv('task1_electronics_rules.csv')
+    print('开始执行任务2...')
+    task2_results = task2_payment_analysis(processed_ddf)
+    task2_results['payment_category_rules'].to_csv('task2_payment_rules.csv')
+    print('开始执行任务3...')
+    task3_results = task3_time_analysis(processed_ddf)
+    task3_results.to_csv('task3_sequence_rules.csv')
     print('开始执行任务4...')
     task4_results = task4_refund_analysis(processed_ddf)
     task4_results['refund_rules'].to_csv('task4_refund_rules.csv')
